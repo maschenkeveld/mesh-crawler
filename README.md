@@ -204,4 +204,5 @@ spec:
 - Health endpoint
 - Security capabilities (oAuth, OIDC)
 - TCP endpoints
+- Improved execption handling
 - Anything else?
