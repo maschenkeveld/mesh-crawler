@@ -33,7 +33,6 @@ def process_post():
         except yaml.YAMLError as e:
             print(e)
         else:
-
             myResponse = {}
             myResponse["myName"] = str(myName)
             upstreamResponses = []
@@ -41,7 +40,13 @@ def process_post():
             for currentService in myNextHops:
                 headers = {
                     "Content-Type": "application/x-yaml", 
-                    "Mesh-Crawler-Requester": myName
+                    "Mesh-Crawler-Requester": myName,
+                    "x-request-id": request.headers.get("x-request-id"),
+                    "x-b3-traceid": request.headers.get("x-b3-traceid"),
+                    "x-b3-parentspanid": request.headers.get("x-b3-parentspanid"),
+                    "x-b3-spanid": request.headers.get("x-b3-spanid"),
+                    "x-b3-sampled": request.headers.get("x-b3-sampled"),
+                    "x-b3-flags": request.headers.get("x-b3-flags")
                 }
 
                 currentUpstreamResponse = requests.Response()
