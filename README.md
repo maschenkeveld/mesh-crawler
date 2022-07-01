@@ -16,17 +16,17 @@ A GET request to this app will just send you a reponse that echoes its incoming 
         "Connection": "keep-alive",
         "Content-Length": "165",
         "Content-Type": "text/plain",
-        "Host": "mesh-crawler-wolverine_apps-1-default_svc_8080.mesh",
+        "Host": "mesh-crawler-bob_apps-1-default_svc_8080.mesh",
         "Postman-Token": "014addf0-66dd-4edb-90fd-ae37a14d3f8a",
         "User-Agent": "PostmanRuntime/7.29.0",
         "X-Forwarded-For": "192.168.3.213",
-        "X-Forwarded-Host": "wolverine.mesh-zone-a.k8s.mschnkvld.lab",
+        "X-Forwarded-Host": "bob.mesh-zone-a.k8s.mschnkvld.lab",
         "X-Forwarded-Path": "/",
         "X-Forwarded-Port": "443",
         "X-Forwarded-Proto": "https",
         "X-Real-Ip": "192.168.3.213"
     },
-    "myName": "wolverine"
+    "myName": "bob"
 }
 ```
 
@@ -46,10 +46,10 @@ Content-Type = application/x-yaml
 
 ```
 nextHops:
-- serviceUrl: http://mesh-crawler-jean_apps-1-default_svc_8080.mesh
+- serviceUrl: http://mesh-crawler-alice_apps-1-default_svc_8080.mesh
   nextHops:
-  - serviceUrl: http://mesh-crawler-cyclops_apps-2-default_svc_8080.mesh
-  - serviceUrl: http://mesh-crawler-storm_apps-1-default_svc_8080.mesh
+  - serviceUrl: http://mesh-crawler-charlie_apps-2-default_svc_8080.mesh
+  - serviceUrl: http://mesh-crawler-grace_apps-1-default_svc_8080.mesh
 ```
 
 **Response**
@@ -62,58 +62,58 @@ nextHops:
         "Connection": "keep-alive",
         "Content-Length": "233",
         "Content-Type": "text/plain",
-        "Host": "mesh-crawler-wolverine_apps-1-default_svc_8080.mesh",
+        "Host": "mesh-crawler-bob_apps-1-default_svc_8080.mesh",
         "Postman-Token": "d5c8fcb4-0764-4636-997c-a0292574ada7",
         "User-Agent": "PostmanRuntime/7.29.0",
         "X-Forwarded-For": "192.168.3.213",
-        "X-Forwarded-Host": "wolverine.mesh-zone-a.k8s.mschnkvld.lab",
+        "X-Forwarded-Host": "bob.mesh-zone-a.k8s.mschnkvld.lab",
         "X-Forwarded-Path": "/",
         "X-Forwarded-Port": "443",
         "X-Forwarded-Proto": "https",
         "X-Real-Ip": "192.168.3.213"
     },
-    "myName": "wolverine",
+    "myName": "bob",
     "myUpstreamResponses": [
         {
-            "[POST] - http://mesh-crawler-jean_apps-1-default_svc_8080.mesh": {
+            "[POST] - http://mesh-crawler-alice_apps-1-default_svc_8080.mesh": {
                 "myIncomingRequestheaders": {
                     "Accept": "*/*",
                     "Accept-Encoding": "gzip, deflate",
                     "Connection": "keep-alive",
                     "Content-Length": "150",
                     "Content-Type": "text/plain",
-                    "Host": "mesh-crawler-jean_apps-1-default_svc_8080.mesh",
-                    "Mesh-Crawler-Requester": "wolverine",
+                    "Host": "mesh-crawler-alice_apps-1-default_svc_8080.mesh",
+                    "Mesh-Crawler-Requester": "bob",
                     "User-Agent": "python-requests/2.28.0"
                 },
-                "myName": "jean",
+                "myName": "alice",
                 "myUpstreamResponses": [
                     {
-                        "[GET] - http://mesh-crawler-cyclops_apps-2-default_svc_8080.mesh": {
+                        "[GET] - http://mesh-crawler-charlie_apps-2-default_svc_8080.mesh": {
                             "myIncomingRequestheaders": {
                                 "Accept": "*/*",
                                 "Accept-Encoding": "gzip, deflate",
                                 "Connection": "keep-alive",
                                 "Content-Type": "text/plain",
-                                "Host": "mesh-crawler-cyclops_apps-2-default_svc_8080.mesh",
-                                "Mesh-Crawler-Requester": "jean",
+                                "Host": "mesh-crawler-charlie_apps-2-default_svc_8080.mesh",
+                                "Mesh-Crawler-Requester": "alice",
                                 "User-Agent": "python-requests/2.28.0"
                             },
-                            "myName": "cyclops"
+                            "myName": "charlie"
                         }
                     },
                     {
-                        "[GET] - http://mesh-crawler-storm_apps-1-default_svc_8080.mesh": {
+                        "[GET] - http://mesh-crawler-grace_apps-1-default_svc_8080.mesh": {
                             "myIncomingRequestheaders": {
                                 "Accept": "*/*",
                                 "Accept-Encoding": "gzip, deflate",
                                 "Connection": "keep-alive",
                                 "Content-Type": "text/plain",
-                                "Host": "mesh-crawler-storm_apps-1-default_svc_8080.mesh",
-                                "Mesh-Crawler-Requester": "jean",
+                                "Host": "mesh-crawler-grace_apps-1-default_svc_8080.mesh",
+                                "Mesh-Crawler-Requester": "alice",
                                 "User-Agent": "python-requests/2.28.0"
                             },
-                            "myName": "storm"
+                            "myName": "grace"
                         }
                     }
                 ]
