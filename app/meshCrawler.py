@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def process_post():
-    print("My name is {} and I RECEIVED a POST request from {}".format(myName, str(request.headers.get('Host'))))
+    print("My name is {} and I RECEIVED a POST request from {}".format(myName, str(request.headers.get('Host'))), file=sys.stderr)
 
     if (request.headers.get('Content-Type') == 'application/x-yaml'):   
         try:
@@ -31,7 +31,7 @@ def process_post():
             myNextHops = requestBody['nextHops']
             #mprint(myNextHops)
         except yaml.YAMLError as e:
-            print(e)
+            print(e, file=sys.stderr)
         else:
             myResponse = {}
             myResponse["myName"] = str(myName)
@@ -49,76 +49,78 @@ def process_post():
                     "x-b3-flags": request.headers.get("x-b3-flags")
                 }
 
+                print(headers, file=sys.stderr)
+
                 currentUpstreamResponse = requests.Response()
                 currentUpstreamExceptionResponse = {}
 
                 try:
                     if "nextHops" in currentService:
                         currentUpstream = str(currentService['serviceUrl'])
-                        print("My name is {} and I will SEND a POST request to {}".format(myName, str(currentUpstream)))
+                        print("My name is {} and I will SEND a POST request to {}".format(myName, str(currentUpstream)), file=sys.stderr)
                         currentUpstreamMethod = "POST"
-                        currentUpstreamRequest = {'nextHops': currentService['nextHops']}
-                        currentUpstreamResponse = requests.post(url = currentUpstream, data = str(yaml.dump(currentUpstreamRequest)), headers = headers)
+                        currentUpstreamRequestBody = {'nextHops': currentService['nextHops']}
+                        currentUpstreamResponse = requests.post(url = currentUpstream, data = str(yaml.dump(currentUpstreamRequestBody)), headers = headers)
                     else:
                         currentUpstream = str(currentService['serviceUrl'])
-                        print("My name is {} and I will SEND a GET request to {}".format(myName, str(currentUpstream)))
+                        print("My name is {} and I will SEND a GET request to {}".format(myName, str(currentUpstream)), file=sys.stderr)
                         currentUpstreamMethod = "GET"
                         currentUpstreamResponse = requests.get(url = currentUpstream, headers = headers)
 
                 except requests.exceptions.InvalidJSONError:
-                    print("A JSON error occurred.") # APPEND THIS TO MYUPSTREAMRESPONSES DICT!!! AS ERROR
+                    print("A JSON error occurred.", file=sys.stderr) # APPEND THIS TO MYUPSTREAMRESPONSES DICT!!! AS ERROR
                     currentUpstreamExceptionResponse["Exception"] = "A JSON error occurred." # APPEND THIS TO MYUPSTREAMRESPONSES DICT!!! AS ERROR
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.HTTPError as e:
-                    print("An HTTP error occurred.")
+                    print("An HTTP error occurred.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "An HTTP error occurred."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.ConnectionError as e:
-                    print("A Connection error occurred.")
+                    print("A Connection error occurred.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "A Connection error occurred."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.ProxyError as e:
-                #     print("A proxy error occurred.")
+                #     print("A proxy error occurred.", file=sys.stderr)
                 #     currentUpstreamExceptionResponse["Exception"] = "A proxy error occurred."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.SSLError as e:
-                #     print("An SSL error occurred.")
+                #     print("An SSL error occurred.", file=sys.stderr)
                 #     currentUpstreamExceptionResponse["Exception"] = "An SSL error occurred."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.Timeout as e:
-                    print("The request timed out.")
+                    print("The request timed out.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The request timed out."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.ConnectTimeout as e:
-                #     print("The request timed out while trying to connect to the remote server.")
+                #     print("The request timed out while trying to connect to the remote server.", file=sys.stderr)
                 #     currentUpstreamExceptionResponse["Exception"] = "The request timed out while trying to connect to the remote server."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.ReadTimeout as e:
-                #     print("The server did not send any data in the allotted amount of time.")
+                #     print("The server did not send any data in the allotted amount of time.", file=sys.stderr)
                 #     currentUpstreamExceptionResponse["Exception"] = "The server did not send any data in the allotted amount of time."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.URLRequired as e:
-                    print("A valid URL is required to make a request.")
+                    print("A valid URL is required to make a request.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "A valid URL is required to make a request."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.TooManyRedirects as e:
-                    print("Too many redirects.")
+                    print("Too many redirects.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "Too many redirects."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.MissingSchema as e:
-                    print("The URL schema (e.g. http or https) is missing.")
+                    print("The URL schema (e.g. http or https) is missing.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The URL schema (e.g. http or https) is missing."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.InvalidSchema as e:
-                    print("See defaults.py for valid schemas.")
+                    print("See defaults.py for valid schemas.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "See defaults.py for valid schemas."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.InvalidURL as e:
-                    print("The URL provided was somehow invalid.")
+                    print("The URL provided was somehow invalid.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The URL provided was somehow invalid."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.InvalidHeader as e:
-                    print("The header value provided was somehow invalid.")
+                    print("The header value provided was somehow invalid.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The header value provided was somehow invalid."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.InvalidProxyURL as e:
@@ -126,27 +128,27 @@ def process_post():
                 #     currentUpstreamExceptionResponse["Exception"] = "The proxy URL provided is invalid."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.ChunkedEncodingError as e:
-                    print("The server declared chunked encoding but sent an invalid chunk.")
+                    print("The server declared chunked encoding but sent an invalid chunk.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The server declared chunked encoding but sent an invalid chunk."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.ContentDecodingError as e:
-                    print("Failed to decode response content.")
+                    print("Failed to decode response content.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "Failed to decode response content."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.StreamConsumedError as e:
-                    print("The content for this response was already consumed.")
+                    print("The content for this response was already consumed.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "The content for this response was already consumed."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.RetryError as e:
-                    print("Custom retries logic failed.")
+                    print("Custom retries logic failed.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "Custom retries logic failed."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.UnrewindableBodyError as e:
-                    print("Requests encountered an error when trying to rewind a body.")
+                    print("Requests encountered an error when trying to rewind a body.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "Requests encountered an error when trying to rewind a body."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.RequestsWarning as e:
-                    print("Base warning for Requests.")
+                    print("Base warning for Requests.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "Base warning for Requests."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 # except requests.exceptions.FileModeWarning as e:
@@ -158,11 +160,11 @@ def process_post():
                 #     currentUpstreamExceptionResponse["Exception"] = "An imported dependency doesn't match the expected version range."
                 #     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except requests.exceptions.RequestException as e:
-                    print("A Request Exceptions occured.")
+                    print("A Request Exceptions occured.", file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "A Request Exceptions occured."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 except Exception as e:
-                    print(e)
+                    print(e, file=sys.stderr)
                     currentUpstreamExceptionResponse["Exception"] = "We are not looking good."
                     currentUpstreamExceptionResponse["ErrorString"] = str(e)
                 else:
@@ -185,7 +187,7 @@ def process_post():
 
 @app.route('/', methods=['GET'])
 def process_get():
-    print("My name is {} and I RECEIVED a GET request from {}".format(myName, str(request.headers.get('Host'))))
+    print("My name is {} and I RECEIVED a GET request from {}".format(myName, str(request.headers.get('Host'))), file=sys.stderr)
 
     myResponse = {}
     myResponse["myName"] = str(myName)
