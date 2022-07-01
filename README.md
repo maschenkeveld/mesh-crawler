@@ -126,7 +126,7 @@ nextHops:
 ## Deployment
 
 ### Docker Build
-I am using private Docker registry to push the docker image to.
+I am using a private Docker registry to push the docker image to.
 ```
 docker image build -t mesh-crawler:1.0.0 .
 docker image tag mesh-crawler:1.0.0 <Docker Registry>/mesh-crawler:1.0.0
@@ -192,6 +192,7 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
+    appProtocol: http
   selector:
     app: mesh-crawler-{{ meshCrawler.name }}
   type: ClusterIP
