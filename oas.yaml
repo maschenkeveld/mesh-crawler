@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Crawler
+  version: 1.0.0
+
+components:
+  schemas:
+    Upstream:
+      type: object
+      properties:
+        host:
+          type: string
+        upstreams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Upstream'
+
+    CrawlResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        name:
+          type: string
+        zone:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        incomingHeaders:
+          type: object
+          additionalProperties:
+            type: string
+        upstreamResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrawlResponse'
+
+    IdentifyResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        name:
+          type: string
+        zone:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        incomingHeaders:
+          type: object
+          additionalProperties:
+            type: string
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+
+paths:
+  /metrics:
+    get:
+      summary: Get metrics
+      responses:
+        '200':
+          description: Successful response
+
+  /health:
+    get:
+      summary: Check health
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /identify:
+    get:
+      summary: Identify
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifyResponse'
+
+  /crawl:
+    post:
+      summary: Crawl data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                upstreams:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Upstream'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrawlResponse'

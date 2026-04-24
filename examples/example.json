@@ -1,0 +1,12 @@
+{
+  "upstreams": [
+    {
+      "host": "bob_mesh-a-apps-a_svc_8080.mesh:80",
+      "upstreams": [
+        {
+          "host": "charlie_mesh-a-apps-b_svc_8080.mesh:80"
+        }
+      ]
+    }
+  ]
+}

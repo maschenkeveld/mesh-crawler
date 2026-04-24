@@ -1,0 +1,79 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mesh-crawler
+  annotations:
+    kuma.io/mesh: mesh-a
+  labels:
+    kuma.io/sidecar-injection: enabled
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: mesh-crawler
+  name: mesh-crawler
+  namespace: mesh-crawler
+data:
+  MESH_ZONE: k8s-zone-0
+  SERVICE_NAME: mesh-crawler_mesh-crawler_svc_8080.mesh:80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mesh-crawler
+  namespace: mesh-crawler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mesh-crawler
+  template:
+    metadata:
+      labels:
+        app: mesh-crawler
+    spec:
+      containers:
+      - name: mesh-crawler
+        envFrom:
+        - configMapRef:
+            name: mesh-crawler
+        image: tg3r/mesh-crawler:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: mesh-crawler
+  namespace: mesh-crawler
+spec:
+  ports:
+  - appProtocol: http
+    port: 8080
+  selector:
+    app: mesh-crawler
